@@ -100,9 +100,16 @@ public class S3Storage implements StorageBackend {
                 .map(k -> ObjectIdentifier.builder().key(k.value()).build())
                 .collect(Collectors.toList());
             final Delete deleteObjects = Delete.builder().objects(objectIds).build();
+            
+            // Compute Content-MD5 header for Tencent COS compatibility
+            final String contentMd5 = S3DeleteUtils.computeDeleteObjectsContentMd5(objectIds);
+            
             final DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
                 .bucket(bucketName)
                 .delete(deleteObjects)
+                .build()
+                .toBuilder()
+                .overrideConfiguration(c -> c.putHeader("Content-MD5", contentMd5))
                 .build();
 
             try {
