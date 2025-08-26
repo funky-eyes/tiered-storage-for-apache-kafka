@@ -23,9 +23,8 @@ import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
-import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
-
 import org.junit.jupiter.api.Test;
+import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -78,7 +77,8 @@ class S3UtilsTest {
         
         // Expected XML with escaped characters: 
         // <Delete><Object><Key>key&lt;with&gt;&amp;&apos;&quot;special&gt;chars</Key></Object></Delete>
-        final String expectedXml = "<Delete><Object><Key>key&lt;with&gt;&amp;&apos;&quot;special&gt;chars</Key></Object></Delete>";
+        final String expectedXml = 
+            "<Delete><Object><Key>key&lt;with&gt;&amp;&apos;&quot;special&gt;chars</Key></Object></Delete>";
         final byte[] xmlBytes = expectedXml.getBytes(StandardCharsets.UTF_8);
         final MessageDigest md = MessageDigest.getInstance("MD5");
         final byte[] digest = md.digest(xmlBytes);

@@ -41,8 +41,8 @@ class S3Utils {
         sb.append("<Delete>");
         for (final ObjectIdentifier id : objectIdentifiers) {
             sb.append("<Object><Key>")
-              .append(escapeXml(id.key()))
-              .append("</Key></Object>");
+                .append(escapeXml(id.key()))
+                .append("</Key></Object>");
         }
         sb.append("</Delete>");
         

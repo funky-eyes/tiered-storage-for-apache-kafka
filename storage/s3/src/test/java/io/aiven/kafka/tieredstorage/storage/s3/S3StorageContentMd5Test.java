@@ -18,15 +18,10 @@ package io.aiven.kafka.tieredstorage.storage.s3;
 
 import java.lang.reflect.Field;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import io.aiven.kafka.tieredstorage.storage.ObjectKey;
 import io.aiven.kafka.tieredstorage.storage.TestObjectKey;
-
-import software.amazon.awssdk.services.s3.S3Client;
-import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
-import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -34,6 +29,9 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsRequest;
+import software.amazon.awssdk.services.s3.model.DeleteObjectsResponse;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.verify;
@@ -52,11 +50,11 @@ class S3StorageContentMd5Test {
         storage = new S3Storage();
         
         // Use reflection to set the required fields directly
-        Field s3ClientField = S3Storage.class.getDeclaredField("s3Client");
+        final Field s3ClientField = S3Storage.class.getDeclaredField("s3Client");
         s3ClientField.setAccessible(true);
         s3ClientField.set(storage, s3Client);
         
-        Field bucketNameField = S3Storage.class.getDeclaredField("bucketName");
+        final Field bucketNameField = S3Storage.class.getDeclaredField("bucketName");
         bucketNameField.setAccessible(true);
         bucketNameField.set(storage, "test-bucket");
     }
