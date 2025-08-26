@@ -22,8 +22,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
 
-import io.aiven.kafka.tieredstorage.storage.ObjectKey;
-
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 
 /**

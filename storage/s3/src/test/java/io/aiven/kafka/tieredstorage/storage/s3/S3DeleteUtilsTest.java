@@ -20,7 +20,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
-
 import software.amazon.awssdk.services.s3.model.ObjectIdentifier;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -74,11 +73,11 @@ class S3DeleteUtilsTest {
             ObjectIdentifier.builder().key("consistent-key").build()
         );
         
-        final String contentMd5_1 = S3DeleteUtils.computeDeleteObjectsContentMd5(objectIds);
-        final String contentMd5_2 = S3DeleteUtils.computeDeleteObjectsContentMd5(objectIds);
+        final String contentMd5First = S3DeleteUtils.computeDeleteObjectsContentMd5(objectIds);
+        final String contentMd5Second = S3DeleteUtils.computeDeleteObjectsContentMd5(objectIds);
         
         // Same input should produce same output
-        assertThat(contentMd5_1).isEqualTo(contentMd5_2);
+        assertThat(contentMd5First).isEqualTo(contentMd5Second);
     }
 
     @Test
