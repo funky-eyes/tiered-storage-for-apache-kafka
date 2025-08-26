@@ -19,6 +19,7 @@ package io.aiven.kafka.tieredstorage.storage.s3;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,6 +32,7 @@ import io.aiven.kafka.tieredstorage.storage.ObjectKey;
 import io.aiven.kafka.tieredstorage.storage.StorageBackend;
 import io.aiven.kafka.tieredstorage.storage.StorageBackendException;
 
+import software.amazon.awssdk.awscore.AwsRequestOverrideConfiguration;
 import software.amazon.awssdk.awscore.exception.AwsServiceException;
 import software.amazon.awssdk.core.exception.SdkClientException;
 import software.amazon.awssdk.services.s3.S3Client;
@@ -100,9 +102,17 @@ public class S3Storage implements StorageBackend {
                 .map(k -> ObjectIdentifier.builder().key(k.value()).build())
                 .collect(Collectors.toList());
             final Delete deleteObjects = Delete.builder().objects(objectIds).build();
+            
+            // Compute Content-MD5 header for Tencent COS compatibility (issue #694)
+            final String contentMd5 = S3Utils.computeDeleteObjectsContentMd5(objectIds);
+            final AwsRequestOverrideConfiguration overrideConfig = AwsRequestOverrideConfiguration.builder()
+                .putHeader("Content-MD5", Collections.singletonList(contentMd5))
+                .build();
+                
             final DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
                 .bucket(bucketName)
                 .delete(deleteObjects)
+                .overrideConfiguration(overrideConfig)
                 .build();
 
             try {
