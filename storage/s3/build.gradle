@@ -40,3 +40,19 @@ dependencies {
         exclude group: "org.slf4j"
     }
 }
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            pom.withXml {
+                def packagingNode = asNode().get('packaging')
+                if (!packagingNode) {
+                    asNode().appendNode('packaging', 'jar')
+                } else {
+                    packagingNode[0].value = 'jar'
+                }
+            }
+        }
+    }
+}
