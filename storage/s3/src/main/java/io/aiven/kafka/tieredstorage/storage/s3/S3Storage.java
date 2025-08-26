@@ -100,9 +100,15 @@ public class S3Storage implements StorageBackend {
                 .map(k -> ObjectIdentifier.builder().key(k.value()).build())
                 .collect(Collectors.toList());
             final Delete deleteObjects = Delete.builder().objects(objectIds).build();
+            
+            // Compute Content-MD5 header for Tencent COS compatibility
+            // See: Aiven-Open/tiered-storage-for-apache-kafka#694
+            final String contentMd5 = S3DeleteUtils.computeDeleteObjectsContentMd5(batch);
+            
             final DeleteObjectsRequest deleteObjectsRequest = DeleteObjectsRequest.builder()
                 .bucket(bucketName)
                 .delete(deleteObjects)
+                .overrideConfiguration(cfg -> cfg.putHeader("Content-MD5", contentMd5))
                 .build();
 
             try {
